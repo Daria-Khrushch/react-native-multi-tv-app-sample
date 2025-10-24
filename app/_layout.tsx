@@ -1,5 +1,4 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
 import { Stack, useNavigation } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect } from 'react';
@@ -7,7 +6,14 @@ import { useCallback, useEffect } from 'react';
 import { MenuProvider } from '../components/MenuContext';
 import { GoBackConfiguration } from './remote-control/GoBackConfiguration';
 
-import "./configureRemoteControl"
+import {
+  useFonts,
+  Montserrat_400Regular,
+  Montserrat_500Medium,
+  Montserrat_700Bold,
+} from '@expo-google-fonts/montserrat';
+
+import './configureRemoteControl';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -15,6 +21,12 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  const [fontsLoaded] = useFonts({
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_700Bold,
   });
 
   useEffect(() => {
@@ -26,22 +38,31 @@ export default function RootLayout() {
     }
   }, [loaded, error]);
 
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   if (!loaded && !error) {
     return null;
   }
 
-  
   return (
     <MenuProvider>
-    <ThemeProvider value={DarkTheme}>
-    <GoBackConfiguration />
-      <Stack>
-        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-        <Stack.Screen name="details" />
-        <Stack.Screen name="player" />
-      </Stack>
-    </ThemeProvider>
+      <ThemeProvider value={DarkTheme}>
+        <GoBackConfiguration />
+        <Stack>
+          <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+          <Stack.Screen name="details" />
+          <Stack.Screen name="player" />
+        </Stack>
+      </ThemeProvider>
     </MenuProvider>
   );
 }
