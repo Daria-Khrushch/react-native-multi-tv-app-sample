@@ -1,18 +1,18 @@
-import React, { useRef, useState, useEffect } from "react";
-import { View, Platform, StyleSheet, Animated } from "react-native";
-import { SpatialNavigationRoot } from "react-tv-space-navigation";
-import { useIsFocused } from "@react-navigation/native";
-import { useLocalSearchParams } from "expo-router";
-import { router, Stack } from "expo-router";
-import RemoteControlManager from "@/app/remote-control/RemoteControlManager";
-import { SupportedKeys } from "@/app/remote-control/SupportedKeys";
-import Controls from "@/components/player/Controls";
-import ExitButton from "@/components/player/ExitButton";
-import LoadingIndicator from "@/components/LoadingIndicator";
-import { VideoRef } from "react-native-video";
-import VideoPlayer from "@/components/player/VideoPlayer";
+import React, { useRef, useState, useEffect } from 'react';
+import { View, Platform, StyleSheet, Animated } from 'react-native';
+import { SpatialNavigationRoot } from 'react-tv-space-navigation';
+import { useIsFocused } from '@react-navigation/native';
+import { useLocalSearchParams } from 'expo-router';
+import { router, Stack } from 'expo-router';
+import RemoteControlManager from '@/app/remote-control/RemoteControlManager';
+import { SupportedKeys } from '@/app/remote-control/SupportedKeys';
+import Controls from '@/components/player/Controls';
+import ExitButton from '@/components/player/ExitButton';
+import LoadingIndicator from '@/components/LoadingIndicator';
+import { VideoRef } from 'react-native-video';
+import VideoPlayer from '@/components/player/VideoPlayer';
 
-const SHOW_NATIVE_CONTROLS = Platform.OS === "ios";
+const SHOW_NATIVE_CONTROLS = Platform.OS === 'ios';
 
 interface PlayerParams extends Record<string, any> {
   movie: string;
@@ -105,7 +105,7 @@ export default function PlayerScreen() {
   const styles = usePlayerStyles();
 
   return (
-    <SpatialNavigationRoot isActive={isFocused && Platform.OS === "android"}>
+    <SpatialNavigationRoot isActive={isFocused && Platform.OS === 'android'}>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
         <VideoPlayer
@@ -121,9 +121,7 @@ export default function PlayerScreen() {
         />
 
         {!SHOW_NATIVE_CONTROLS && controlsVisible && !!durationRef.current && (
-          <Animated.View
-            style={[styles.controlsContainer, { opacity: controlsOpacity }]}
-          >
+          <Animated.View style={[styles.controlsContainer, { opacity: controlsOpacity }]}>
             {isVideoBuffering && <LoadingIndicator />}
             <ExitButton onSelect={() => router.back()} />
             <Controls
@@ -143,12 +141,12 @@ const usePlayerStyles = () => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#000",
+      backgroundColor: '#000',
     },
     controlsContainer: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      justifyContent: "space-between",
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'space-between',
       zIndex: 1,
     },
   });

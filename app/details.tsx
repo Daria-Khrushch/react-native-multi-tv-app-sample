@@ -1,10 +1,10 @@
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { StyleSheet, View, Image, Text } from "react-native";
-import { SpatialNavigationRoot } from "react-tv-space-navigation";
-import { scaledPixels } from "@/hooks/useScale";
-import { useCallback } from "react";
-import { useIsFocused } from "@react-navigation/native";
-import FocusablePressable from "@/components/FocusablePressable";
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { StyleSheet, View, Image, Text } from 'react-native';
+import { SpatialNavigationRoot } from 'react-tv-space-navigation';
+import { scaledPixels } from '@/hooks/useScale';
+import { useCallback } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import FocusablePressable from '@/components/FocusablePressable';
 
 interface LocalParams extends Record<string, any> {
   title: string;
@@ -14,16 +14,18 @@ interface LocalParams extends Record<string, any> {
 }
 
 export default function DetailsScreen() {
-  const { title, description, movie, headerImage } =
-    useLocalSearchParams<LocalParams>();
+  const { title, description, movie, headerImage } = useLocalSearchParams<LocalParams>();
 
   const styles = useDetailsStyles();
   const router = useRouter();
   const isFocused = useIsFocused();
+  const isValidUrl = (u?: string | null): boolean => !!u && /^https?:\/\//i.test(u);
+
+  const safeHeaderSource = isValidUrl(headerImage) ? { uri: headerImage } : require('@/assets/images/channel_icon.png');
 
   const navigate = useCallback(() => {
     router.push({
-      pathname: "/player",
+      pathname: '/player',
       params: {
         movie: movie,
         headerImage: headerImage,
@@ -35,7 +37,7 @@ export default function DetailsScreen() {
     <SpatialNavigationRoot isActive={isFocused}>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
-        <Image source={{ uri: headerImage }} style={styles.backgroundImage} />
+        <Image source={safeHeaderSource} style={styles.backgroundImage} />
         <View style={styles.contentContainer}>
           <View style={styles.topContent}>
             <Text style={styles.title}>{title}</Text>
@@ -57,7 +59,7 @@ export default function DetailsScreen() {
               </View>
             </View>
             <FocusablePressable
-              text={"Watch now"}
+              text={'Watch now'}
               onSelect={navigate}
               style={{ paddingHorizontal: scaledPixels(30) }}
             />
@@ -72,18 +74,18 @@ const useDetailsStyles = function () {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#000",
+      backgroundColor: '#000',
     },
     backgroundImage: {
-      position: "absolute",
-      width: "100%",
-      height: "100%",
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
       opacity: 0.3,
     },
     contentContainer: {
       flex: 1,
       padding: scaledPixels(40),
-      justifyContent: "space-between",
+      justifyContent: 'space-between',
     },
     topContent: {
       marginTop: scaledPixels(600),
@@ -93,23 +95,23 @@ const useDetailsStyles = function () {
     },
     title: {
       fontSize: scaledPixels(48),
-      fontWeight: "bold",
-      color: "#fff",
+      fontWeight: 'bold',
+      color: '#fff',
       marginBottom: scaledPixels(20),
-      textShadowColor: "rgba(0, 0, 0, 0.75)",
+      textShadowColor: 'rgba(0, 0, 0, 0.75)',
       textShadowOffset: { width: -1, height: 1 },
       textShadowRadius: 10,
     },
     description: {
       fontSize: scaledPixels(24),
-      color: "#fff",
+      color: '#fff',
       marginBottom: scaledPixels(20),
-      width: "60%",
+      width: '60%',
       lineHeight: scaledPixels(32),
     },
     crewContainer: {
-      flexDirection: "row",
-      flexWrap: "wrap",
+      flexDirection: 'row',
+      flexWrap: 'wrap',
       marginBottom: scaledPixels(30),
     },
     crewMember: {
@@ -118,33 +120,33 @@ const useDetailsStyles = function () {
     },
     crewRole: {
       fontSize: scaledPixels(16),
-      color: "#aaa",
-      fontWeight: "600",
+      color: '#aaa',
+      fontWeight: '600',
     },
     crewName: {
       fontSize: scaledPixels(24),
-      color: "#fff",
-      fontWeight: "bold",
+      color: '#fff',
+      fontWeight: 'bold',
     },
     watchButton: {
-      backgroundColor: "rgba(255, 255, 255, 0.25)",
+      backgroundColor: 'rgba(255, 255, 255, 0.25)',
       paddingVertical: scaledPixels(15),
       paddingHorizontal: scaledPixels(30),
       borderRadius: scaledPixels(5),
-      alignSelf: "flex-start",
+      alignSelf: 'flex-start',
     },
     watchButtonFocused: {
-      backgroundColor: "#fff",
+      backgroundColor: '#fff',
     },
     watchButtonText: {
-      color: "#fff",
+      color: '#fff',
       fontSize: scaledPixels(18),
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
     watchButtonTextFocused: {
-      color: "#000",
+      color: '#000',
       fontSize: scaledPixels(18),
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
   });
 };

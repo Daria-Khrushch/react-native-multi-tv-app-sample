@@ -34,10 +34,16 @@ async function j<T>(u: string) {
 // RN <Image> can't render SVG without extra libs; prefer raster formats
 const RASTER = new Set(['PNG', 'JPEG', 'WebP', 'GIF', 'APNG']);
 
+function isValidUrl(u?: string | null): u is string {
+  const t = (u ?? '').trim();
+  if (!t) return false;
+  return /^https?:\/\//i.test(t);
+}
+
 // Pick the first valid stream
 function pickBestStream(rows: StreamRow[]): StreamRow | null {
   if (!rows.length) return null;
-  return rows.find((s) => s.url) ?? null;
+  return rows.find((s) => isValidUrl(s.url)) ?? null;
 }
 
 // Pick a logo, preferring: (1) exact feed match in raster format,
@@ -88,6 +94,7 @@ export async function loadUiChannels(limit = 30): Promise<UiChannel[]> {
   streams.forEach((s) => {
     if (!s.channel || !s.url) return;
     if (blocked.has(s.channel)) return;
+    if (!isValidUrl(s.url)) return;
     if (!byChannel.has(s.channel)) byChannel.set(s.channel, []);
     byChannel.get(s.channel)!.push(s);
   });

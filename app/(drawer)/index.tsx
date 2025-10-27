@@ -79,27 +79,38 @@ export default function IndexScreen() {
     [focusedIndex, navigation, toggleMenu],
   );
 
-  // Selecting a tile sets it as the "current" channel and starts playing
-  const handleSelectTile = useCallback(
+  const playIndex = useCallback(
     (index: number) => {
       const item = items[index];
       if (!item) return;
+
       setCurrentIndex(index);
       setIsPlaying(true);
-
-      // router.push({
-      //   pathname: '/details',
-      //   params: {
-      //     title: item.title,
-      //     description: item.description,
-      //     headerImage: item.channelLogo,
-      //     movie: item.movie,
-      //     referrer: item.referrer ?? '',
-      //     ua: item.userAgent ?? '',
-      //   },
-      // });
+      // Navigate to the Details screen and pass selected channel info
+      // Details screen displays channel info and "Watch now" button.
+      // On press, navigates to the Player screen with video URL.
+      // Player screen plays the selected video stream.
+      router.push({
+        pathname: '/details',
+        params: {
+          title: item.title,
+          description: item.description,
+          headerImage: item.channelLogo,
+          movie: item.movie,
+          referrer: item.referrer ?? '',
+          ua: item.userAgent ?? '',
+        },
+      });
     },
-    [items],
+    [items, router],
+  );
+
+  // Selecting a tile sets it as the "current" channel and starts playing
+  const handleSelectTile = useCallback(
+    (index: number) => {
+      playIndex(index);
+    },
+    [playIndex],
   );
 
   // Header shows either the currently playing channel or the tile under focus
@@ -117,15 +128,14 @@ export default function IndexScreen() {
 
           <SpatialNavigationFocusableView
             onSelect={() => {
-              if (currentItem) {
-                setIsPlaying((prev) => {
-                  const next = !prev;
-                  if (!next) setCurrentIndex(null);
-                  return next;
-                });
-              } else if (focusedItem) {
-                setCurrentIndex(focusedIndex);
-                setIsPlaying(true);
+              if (currentItem != null) {
+                if (isPlaying) {
+                  setIsPlaying(false);
+                } else {
+                  playIndex(currentIndex as number);
+                }
+              } else {
+                playIndex(focusedIndex);
               }
             }}
           >
